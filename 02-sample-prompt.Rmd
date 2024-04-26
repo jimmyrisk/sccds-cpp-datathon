@@ -1,9 +1,11 @@
 ---
-title: "Sample Prompt"
-date: "(Southern California Consortium for Data Science)"
-author: "Cal Poly Pomona Datathon"
+title: 'Coding Session 2: Going Through a Sample Prompt'
+author: "Cal Poly Pomona Datathon  --  Southern California Consortium for Data Science"
+date: "Saturday April 27 2024"
 output:
-    pdf_document
+  pdf_document: default
+  html_document:
+    df_print: kable
 ---
 
 
@@ -11,7 +13,7 @@ output:
 \renewcommand{\P}{\mathds{P}}
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(out.width="6in", out.height="4in", fig.align="center", warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(out.width="70%", out.height="60%", fig.align="center", warning=FALSE, message=FALSE)
 
 ```
 
@@ -23,14 +25,16 @@ Your boss comes up to you and says "we're spending all of this money on promotio
 
 ### Challenge 1:
 
-Look at the data summary sheet and brainstorm some ways to answer your boss's first question: *"How exactly is it helping us?"*
+Look at the facebook summary sheet and brainstorm some ways to answer your boss's first question: *"How exactly is it helping us?"*
 
 Also brainstorm ways to answer the second question: *"Are there certain situations where it is less effective than others?"*
+
+In your brainstorming, think about plots and summary statistics you could produce to try to answer the questions.
 
 
 \newpage
 
-## First Question 
+## 1. First Question 
 
 *"How exactly is it helping us?"*
 
@@ -41,42 +45,62 @@ Also brainstorm ways to answer the second question: *"Are there certain situatio
 # Load libraries first if you know which ones you need
 library(ggplot2)
 
-# This needs to be done once to load the dataset.
+# This needs to be done once to load the dataset into the environment.
 facebook <- read.csv("facebook_cosmetics.csv", stringsAsFactors = TRUE)
 
 # Look at the first few rows
 head(facebook)
 ```
 
-### Brainstorming
+### Challenge 2
+
+Carefully look two of the rows ``head(facebook)`` and carefully understand what each number means.  
+
+Using the *third* row as an example, I would say the following
+
+* at the time of posting, the page had 139441 likes.  
+* The post was a photo, and it was in the "inspiration" category (*meaning non-explicit brand related content*).  
+* It was posted in December on Tuesday at 3pm.  
+* It did not have paid advertising.  
+* The post was seen by 2413 unique individuals, and it was seen in total 4373 times. 
+* 177 users engaged with the post *(meaning they clicked on it in some manner)*.
+* It had 0 comments, 66 likes, and 14 shares, resulting in a total of 80 interactions.
+
+## 1.1 Brainstorming and Boxplots
+
+Let's brainstorm some things that will be useful in answering the boss's question.
 
 * ``PaidAd`` has two outcomes and can be considered categorical.
 * Desired qualities of a post would be when they have a high ``TotalReach``, ``TotalImpressions``, ``EngagedUsers``, ``Comments``, ``Likes``, ``Shares``, and ``Interactions``.  These are all **numerical** so we can use boxplots and/or histograms.
   * Since ``Interactions`` is the total of ``Comments``, ``Likes``, and ``Shares``, we will just look at ``Interactions`` in this example.
   
+
+**(Make sure you have the "Facebook Dataset" sheet in front of you, so you can quickly reference what the variables mean!)**  
+
 *[Note: ``PageLikes`` is the number that like the page at the time of posting, not of the post itself.]*
   
+
 ```{r}
 ggplot(facebook) + geom_boxplot(aes(x = PaidAd, y = TotalReach, fill = PaidAd))
 
-# For efficiency, you should copy+paste the code above to produce this code
+# For efficiency, you should copy+paste the other boxplot code to produce this
 ggplot(facebook) + geom_boxplot(aes(x = PaidAd, y = TotalImpressions, fill = PaidAd))
 
-# For efficiency, you should copy+paste the code above to produce this code
+# For efficiency, you should copy+paste the other boxplot code to produce this
 ggplot(facebook) + geom_boxplot(aes(x = PaidAd, y = EngagedUsers, fill = PaidAd))
 
-# For efficiency, you should copy+paste the code above to produce this code
+# For efficiency, you should copy+paste the other boxplot code to produce this
 ggplot(facebook) + geom_boxplot(aes(x = PaidAd, y = Interactions, fill = PaidAd))
 ```
 
 * It looks like paying for advertising increases the reach *(number of unique users to see the post)* and impressions *(number of times page was seen)* by a lot.
-* It also increases the number of times the post was engaged with, and the number of comments, likes, and shares, but not by as much as the reach and impressions.
+* It also increases the number of times the post was engaged with, and the interactions *(total number of comments, likes, and shares)*, but not by as much as the reach and impressions.
 
-### Challenge 2
+### Challenge 3
 
 Think about how advertising works in social media, and connect this to the two bullet points above.  Why do you think it didn't increase the engagement as much as the reach?
 
-### Histograms
+## 1.2 Histograms
 
 Histograms can show similar but more detailed relationships.
 
@@ -85,7 +109,7 @@ ggplot(facebook) +
   geom_histogram(aes(x = TotalReach, col = PaidAd), bins = 20) + 
   facet_wrap(~PaidAd, scales = "free_y")
 
-# For efficiency, you should copy+paste the code above to produce this code
+# For efficiency, you should copy+paste the other histogram code to produce this
 ggplot(facebook) + 
   geom_histogram(aes(x = TotalImpressions, col = PaidAd), bins = 20) + 
   facet_wrap(~PaidAd, scales = "free_y")
@@ -93,44 +117,32 @@ ggplot(facebook) +
 
 For example, this shows that advertising generally produces more reach, but more importantly, a larger number of cases where the reach is around 40,000 or larger.
 
-### Challenge 3
+### Challenge 4
 
 Produce similar histograms for ``EngagedUsers`` and ``Interactions``.  Can you make similar claims?
 
 
-### Numerical Summary Statistics
+## 1.3 Numerical Summary Statistics
 
   
 ```{r}
 # We can also get some numerical summary statistics
-facebook_not_paid <- subset(facebook, PaidAd == 0)
-facebook_paid <- subset(facebook, PaidAd == 1)
+facebook_not_paid <- subset(facebook, PaidAd == "No")
+facebook_paid <- subset(facebook, PaidAd == "Yes")
 
-
-# Summary statistics
-summary(facebook_not_paid$TotalReach)
-summary(facebook_paid$TotalReach)
-
-
-# For efficiency, you should copy+paste the code above to produce this code
-summary(facebook_not_paid$TotalImpressions)
-summary(facebook_paid$TotalImpressions)
-
-
-# For efficiency, you should copy+paste the code above to produce this code
-summary(facebook_not_paid$EngagedUsers)
-summary(facebook_paid$EngagedUsers)
+summary(facebook_not_paid)
+summary(facebook_paid)
 ```
 
 Looking at the means, advertisements
 
-* Increase the average number of users that see a post by 4447 *(going from 7006 without to 11453 with)*
-* Increase the average number of times a post was seen by 9194 *(going from 11867 without to 21061 with)*
-* Increase the average number of times the post engaged with (clicked on) by 85 *(going from 693.8 without to 778.8 with)*
+* Increase the average number of users that see a post by 4447 *(going from 7006 not paid to 11453 paid)*
+* Increase the average number of times a post was seen by 9194 *(going from 11867 not paid to 21061 paid)*
+* Increase the average number of times the post engaged with (clicked on) by 85 *(going from 693.8 not paid to 778.8 paid)*
 
 ### Math Note!
 
-Even though the number of times the post was engaged with increased only by 85, it increased a decent amount percentage wise.  The percent increase is
+Even though the number of times the post was engaged with increased only by 85, this was an increase of 12.25\%.
 
 \[ \frac{778.8}{693.8} - 1 = 0.1225 \qquad \text{ or } \qquad 12.25\%\]
 
@@ -140,38 +152,47 @@ Even though the number of times the post was engaged with increased only by 85, 
 (778.8 / 693.8 - 1) * 100  # as a percentage
 ```
 
-*(you can multiply the decimal by 100 to get the \%).*.  So, there is a 12.25\% increase in the average numbers of users clicking on a post when an advertisement is used.
+*(you can multiply the decimal by 100 to get the \%)*  So, there is a 12.25\% increase in the average numbers of users clicking on a post when an advertisement is used.
 
 This is a useful thing to mention to your boss!  
 
-### Challenge 4
+### Challenge 5
 
 What is the average increase in post ``interactions`` for when a post has a paid advertisement *(compared to not having one)*?
 
 Also compute the percentage increase in the average post ``interactions``.  \emph{(Check your answer with the correct one which is 21.85\%.)}
 
 
-### Answer to Boss's Question 1
+## 1.4 Answer to Boss's Question 1
 
 Here are some things that could be mentioned to the boss for their first question:
 
-* Advertising significantly helps post reach and impressions *(showing the post to more users)*.  It helps with post interaction, but not as much as it does for reach and impressions.  **(Use boxplots to help explain it.)**
+* Advertising significantly helps post reach and impressions *(showing the post to more users)*.  It helps with post interaction, but not as much as it does for reach and impressions.  This is expected, because it is what paying for advertising does. **(Use boxplots to help explain it.)**
+  * *[You should add something similar, but for ``EngagedUsers`` and ``Interactions``.]*
 * Advertising helps to produce posts that have very large reach.  **(Show faceted histograms)**
 * Advertisements increase the average number users that see a post was a post by 4447 *(going from 7006 without to 11453 with)*, with a percent increase in the average of 63.47\%.
 
 Similar claims would be made about the other average increases and percentage increases.
-  
-### Challenge 5
 
-What would you add to this answer based on Challenge 3?
+It is also important to think about what "helping us" means.  For example, we could make similar claims about the ``likes`` or ``shares`` of a post.  But are these as important as things like the ``total post reach`` and ``number of engaged users``?  (*The answer is not 100\% clear, and it rarely is.  This always requires critical thinking!*)
+
+
+
+### Challenge 6
+
+Fill in the *"You should add something similar..."* bullet point based on your work in Challenge 3.  
+
+
 
 \newpage
 
-## Second Question
+## 2. Second Question
 
 *"Are there certain situations where it is less effective than others?"*
 
-This is a more challenging question and there are several ways to begin coming up with an answer.  Here is a straightforward way to begin:
+This is a much **more challenging question** and there are several ways to begin coming up with an answer.  
+
+A straightforward way to begin is to see how ``PaidAd`` works with *other variables* to affect things like ``total reach``, ``engaged users``, etc.. 
 
 ```{r}
 # Boxplot of TotalReach divided by Content Category and Advertising
@@ -184,7 +205,8 @@ Right away this tells us that paid ads tend to be more effective for **Action** 
 The improvement in **Inspiration** posts *(non-explicit brand related content)* are even less pronounced.
 
 ```{r}
-# Frequency table of different categories
+# Frequency table of different categories.  
+#   This checks if the boxplots are reliable.
 table(facebook$ContentCategory, facebook$PaidAd)
 ```
 
@@ -198,25 +220,33 @@ ggplot(facebook) +
 
 The conclusions are mostly the same when working with ``EngagedUsers``, just less extreme.  The ``Inspiration`` category is an exception, where it increases the lower end of engaged users, but actually decreases the upper end of engaged users.  This decreases the *variability*, but does not tend to offer an overall increase.
 
-### Challenge 6
-
-Perform the same analysis for ``TotalImpressions`` and ``Interactions``.  
-
 ### Challenge 7
 
-Based on the analysis performed so far, what would you report to your boss to answer the question *"Are there certain situations where it is less effective than others?"*
+Perform the same analysis for ``TotalImpressions`` and ``Interactions``.  This means to make similar plots and analyze them similarly.  Are the conclusions mostly the same?  What is different?
 
 ### Challenge 8
 
-Brainstorm some additional ways to analyze the data to better answer your boss's question.  *(This is addressed on the next page)*
+Perform similar for ``PostType`` instead of ``ContentCategory``.
+
+## 2.1 Answer to Boss's Second Question
+
+
+### Challenge 9
+
+Based on the analysis performed so far, what would you report to your boss to answer the question *"Are there certain situations where it is less effective than others?"
+
+
+### Challenge 10
+
+Brainstorm some additional ways to analyze the data to better answer your boss's question.  *(some examples are addressed on the next page)*
 
 \newpage
 
-### Next Steps
+## 2.2 Some Next Steps
 
-There are many ways to perform more analysis for your boss's second question.  Here are a few examples:
+There are many ways to perform further analysis for your boss's second question.  Here are a few things to take into consideration:
 
-* Make Histograms like before, but using ``facet_grid``, like this:
+1. Histograms like before, but using ``facet_grid``, like this:
 
 ```{r}
 ggplot(facebook) + 
@@ -224,18 +254,17 @@ ggplot(facebook) +
   facet_grid(PaidAd~ContentCategory, scales = "free_y")
 ```
 
-* Critically evaluate what your boss means by "effective."  Is it specifically post exposure (through ``TotalReach`` and ``TotalImpressions``) enough?  Or is something like ``EngagedUsers`` more important?  Maybe both?
-* Perform similar analysis but across other variables like ``PostType``, ``PageLikes``, and time of posting ``Month``, ``Weekday``, ``Hour``.
+What does this tell us?
 
-For the numeric variable ``PageLikes`` a visual may look something like
+2. Critically evaluate what your boss means by "effective."  Is it specifically post exposure (through ``TotalReach`` and ``TotalImpressions``) enough?  Or is something like ``EngagedUsers`` more important?  Maybe both?
+3. Perform similar analysis but across other variables like ``PostType``, ``PageLikes``, and time of posting ``Month``, ``Weekday``, ``Hour``.
+4. For the numeric variable ``PageLikes`` a visual may look something like
 
 ```{r}
 # This plot doesn't show much, but it is a proof of concept.
 ggplot(facebook) + 
   geom_jitter(aes(y = EngagedUsers, x = PageLikes, col=PaidAd)) + facet_wrap(~PaidAd)
 ```
-
-
 
 
 One of the challenges in data analysis is to know when you are done.  Just like with a painting, there is no clearly defined end point.  So, try your best to answer the prompts as best you can, and move on when you feel ready!

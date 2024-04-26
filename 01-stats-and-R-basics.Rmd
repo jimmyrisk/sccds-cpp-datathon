@@ -1,9 +1,11 @@
 ---
-title: "Stats and R Basics"
-date: "(Southern California Consortium for Data Science)"
-author: "Cal Poly Pomona Datathon"
+title: 'Coding Session 1: Coding, Stats, and R Basics'
+author: "Cal Poly Pomona Datathon  --  Southern California Consortium for Data Science"
+date: "Saturday April 27 2024"
 output:
-    pdf_document
+  pdf_document: default
+  html_document:
+    df_print: kable
 ---
 
 
@@ -11,12 +13,11 @@ output:
 \renewcommand{\P}{\mathds{P}}
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(out.width="6in", out.height="4in", fig.align="center", warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(out.width="70%", out.height="60%", fig.align="center", warning=FALSE, message=FALSE)
 
 ```
 
 
-\newpage
 
 # 1. Basics
 
@@ -24,9 +25,11 @@ In this section, you will learn the basics of ``R``.
 
 To follow along, you should type the code that appears in each box to ensure you are getting the intended result.
 
-When you encounter a "**Challenge**", this is a task you should solve with your group using critical thinking.  
+1. When you encounter a "**Challenge**", this is a task you should solve with your group using critical thinking.  
+2. In this first part, whenever you see a box of code, you should also type out that code and run it to verify the output.  We all need to learn the basics.
+3. When we get to part 2 (*Data Frames*), it is okay to focus more on the challenges and read code and the output.  However, you should still type out any code that feels "brand new."  Physically typing out the code helps more than you might think.
 
-Don't be afraid to ask for help at any point during the datathon!
+Don't be afraid to ask for help at any point during the datathon!  Raise your hand and a volunteer will come help right away.
 
 ## 1.1 ``R`` is a calculator
 
@@ -81,13 +84,13 @@ In what follows, you do not necessarily need to type out all of the comments.  H
 
 What if the ``7`` is instead a ``9``?  
 
-Instead of typing out this code, go back and adjust your ``(2 + 7 + 3 + 2) / 4)`` line in the script.  Then use ``CTRL + ENTER`` (or the "run" button) to run it.
+Instead of typing out this code, go back and adjust ``(2 + 7 + 3 + 2) / 4)`` in the script.  Then use ``CTRL + ENTER`` to run it.
 
 ```{r}
 (2 + 9 + 3 + 2) / 4
 ```
 
-You can also recycle commands with the console:  
+You can also *recycle* commands with the console:  
 
 * Click anywhere in the console, and press the ``up arrow`` on the keyboard.  Keep pressing it and cycle through to see the commands you have ran.
 * Click on the ``"History"`` tab in the upper right as another way to see previous commands.  (*Make sure to click back to ``"Environment"``...we will be using it soon*)
@@ -102,7 +105,6 @@ You can also recycle commands with the console:
 (2 + 9 + 3 + 2) / 4
 ```
 
-\newpage
 
 ### White Space
 
@@ -158,7 +160,7 @@ round(3.14,
 
 ``R`` reads from left to right, line by line.  If it does not see the end of a statement, then it will keep going onto the next line.
 
-### Challenge 2
+### Challenge 1
 
 What do you think this code will produce?  Predict the answer yourself before running it.
 
@@ -239,10 +241,11 @@ length(ages)
 
 ```{r}
 # average the ages to obtain the mean: (16 + 18 + 20 + 22 + 24) / 5
-mean(ages)
+mean(ages)  # this is faster than typing out (16 + 18 + 20 + 22 + 24) / 5
 ```
 
 ```{r}
+# smallest and largest ages
 range(ages)
 ```
 
@@ -297,7 +300,7 @@ library(ggplot2)
 data(mpg) 
 ```
 
-## Data Frame Functions (``mpg``)
+## 2.1 Data Frame Functions (``mpg``)
 
 In ``mpg``,
 
@@ -322,16 +325,20 @@ mpg$hwy  # highway mpg
 
 # average highway mpg of cars in the dataset
 mean(mpg$hwy)  
+```
 
+```{r, eval = FALSE}
 # view the data frame like an excel spreadsheet
 View(mpg)
 ```
 
-### Challenge 5:
+You can also use the environment instead of typing ``View(...)``.  Do this now by clicking on ``mpg`` in the environment tab.
+
+### Challenge 2:
 
 Find the average city miles per gallon for a car in the dataset and compare it to the average highway miles per gallon.  Does the result surprise you?
 
-## Data Frame Filtering (``mpg``)
+## 2.2 Data Frame Filtering with ``subset`` (``mpg``)
 
 ```{r, eval = FALSE}
 # Filtering cars with highway mileage greater than 30
@@ -348,7 +355,7 @@ mean(minivans$hwy)
 ```
 
 
-## Statistics Primer 
+## 2.3 Statistics Primer 
 
 ### Variable Types
 
@@ -367,7 +374,7 @@ mean(mpg$class)  # this will return an error
 unique(mpg$class)  # gives the unique elements of car type ("levels" or "categories")
 ```
 
-### Challenge 6:
+### Challenge 3:
 
 1. Give another numerical variable in ``mpg``, and report its average.
 2. Give another categorical variable in ``mpg``, and report its possible categories.
@@ -402,10 +409,11 @@ mpg[sapply(mpg, is.character)] <- lapply(mpg[sapply(mpg, is.character)],
 ```
 
 
+\newpage
 
-## Plots and Summary Statistics
+# 3. Plots and Summary Statistics
 
-## Basic Plots
+## 3.1 Basic Plots
 
 ### Scatterplots
 
@@ -456,11 +464,15 @@ ggplot(mpg) +
   ggtitle("Highway MPG vs City MPG Colored by Car Class")
 ```
 
+
+
+
+
 ### CAUTION:
 
 Use ``geom_point`` unless the data is overlapping (common when the numeric values are forced to be whole numbers).  Only use ``jitter`` when needed *(otherwise the data is slightly misrepresented*).  
 
-### Challenge 7:
+### Challenge 4:
 
 Answer a couple of questions based on the plot just created.
 
@@ -469,13 +481,13 @@ Answer a couple of questions based on the plot just created.
 * What class of cars tend to have the highest MPG (in general)?
 
 
-### Dotplots and Five Number Summaries
+## 3.2 Five Number Summaries
 
-A five number summary (and mean) is best motivated through a dotplot.
+A five number summary (and mean) helps summarize numeric variables.  It is best motivated by looking at the data a certain way.  Let's represent each mpg as a point on a plot.
 
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, out.height="100%", out.width="100%"}
 library(dplyr)
 library(ggplot2)
 
@@ -513,9 +525,9 @@ ticks_df <- data.frame(x = 12:44, y = rep(1, 33))  # Base of ticks at y = 1
 
 # Create the dot plot with specified modifications
 dot_plot <- ggplot(dotplot_df, aes(x = hwy, y = Frequency + 1.2, color = Color)) +  # Shift frequency up by 1
-  geom_point(size = 2, aes(fill = Color, shape = shape)) +  # Using different shapes and larger size
-  geom_segment(aes(x = mean_hwy, xend = mean_hwy, y = -1, yend = 0.8),  # Red arrow from y=0 to y=1
-               color = "red", size = 2, 
+  geom_point(size = 2.5, aes(fill = Color, shape = shape)) +  # Using different shapes and larger size
+  geom_segment(aes(x = mean_hwy, xend = mean_hwy, y = -3, yend = 0.25),  # Red arrow from y=0 to y=1
+               color = "red", size = 3, 
                arrow = arrow(length = unit(0.2, "cm"), ends = "last", type = "open")) +
   geom_hline(yintercept = 1, color = "black", size = 1.5) +  # Black base line at y=1
   scale_x_continuous(breaks = seq(12, 44, by = 1), 
@@ -547,18 +559,21 @@ summary(mpg$hwy)
 
 * The **minimum** (``Min.``) highway mpg is 12.  This represents the lowest data point in the dataset.
 * The **maximum** (``Max.``) highway mpg is 44.  This is the highest value observed in the dataset.
-* The **mean** (``Mean``) highway mpg is 23.44.  This is indicated by the red arrow on the plot and can be thought of as the *center of balance* for the distribution.
+* The **mean** (``Mean``) highway mpg is 23.44.  This is indicated by the arrow on the plot and can be thought of as the *center of balance*.
+  * If the red arrow was moved to the left, then the right side would tip over.  If it was moved to the right, then the left side would tip over.
 * The **median** (``Median``, 24), **first quartile** (``1st Qu.``, 18) **third quartile** (``3rd Qu.``, 27) divide the data into **quarters** (or, fourths).
   * The circles are the smallest.
   * The triangles are the next smallest.
   * The squares are the next.
-  * The plus's are next (so they are the largest quarter of the data)
+  * The plus's are next *(so, they are the largest quarter of the data!)*
 
 Another way to think about it:
 
 * 25% of the data is at or below ``1st Qu.``
 * 50% of the data is at or below ``Median``  *(so, half of the data is at or below the median, and the other half is above.)*
 * 75% of the data is at or below ``3rd Qu.``
+
+(*Note: the five number summary is ``Min``, ``1st Qu.``, ``Median``, ``3rd Qu.``, and ``Max``.  The mean is not considered as part of the "five number summary".*)
 
 ### Boxplot
 
@@ -571,11 +586,11 @@ ggplot(mpg) +
   scale_x_discrete()             # optional, but makes it look better
 ```
 
-Look at the $y$-axis and note that it matches the five number summary.
+Look at the $y$-axis (``hwy``) and note that it matches the five number summary.
 
 The dots represent **outliers** and are extreme values.
 
-# Boxplot separated by categorical variable
+### Boxplot separated by categorical variable
 
 ```{r}
 # Separate hwy by vehicle class
@@ -587,7 +602,7 @@ ggplot(mpg) +
   geom_boxplot(aes(y = hwy, x = class, fill = class)) 
 ```
 
-## Full Summary Statistics
+## 3.3 Summarizing an entire dataset
 
 ``summary(mpg)`` gives some summary statistics for each column of the data frame ``mpg``.  
 
@@ -602,7 +617,8 @@ summary(mpg)
 For example, there are 62 SUV's in the dataset and 11 minivans, and the average city mpg is 16.86.
 
 ```{r}
-# Summary statistics for minivans.  Remember we defined this earlier?
+# Summary statistics for minivans.  
+#   Remember we defined "minivans" earlier?  Look in your environment!
 summary(minivans)
 ```
 
@@ -615,11 +631,11 @@ table(mpg$class, mpg$drv)
 
 For example, there are 12 compacts with 4 wheel drive, and all minivans (11) have front wheel drive.
 
-## Other Plotting Tools
+## 3.4 Other Plotting Tools
 
 ### Histograms
 
-Histograms are useful for numeric variables that can take decimal values *(they are called "continuous" instead of "discrete" which is whole number valued)*.  
+**Histograms** are useful for numeric variables that can take **decimal values** *(decimal valued variables are called "continuous".  Whole number valued are called "discrete")*.  
 
 They "bin" the data into ranges.
 
@@ -663,10 +679,12 @@ ggplot(mpg) +
 ```
 
 
+Here we can see the data **"tails off"** to the right, and the majority is around 2 and 3 size engines.
+
 
 ### Faceting
 
-Faceting is very useful to display plots broken up by categorical variables.
+**Faceting** is useful to display plots broken up by categorical variables.
 
 ```{r}
 # No Facet
@@ -690,7 +708,7 @@ ggplot(mpg) + geom_point(aes(x=displ, y = hwy, col = class))
 ```
 
 
-### Challenge 8
+### Challenge 5
 
 Use the faceted scatterplot to determine what classes of cars have the best highway mpg.  What can we say about the engine sizes of those cars?
 
@@ -710,3 +728,55 @@ ggplot(mpg) + geom_histogram(aes(x = hwy, fill = class), color = "black", bins =
 ggplot(mpg) + geom_boxplot(aes(y = cty, x = drv, fill = class))
 ```
 
+## 3.5 Correlation
+
+The **correlation** is a summary statistic between two numeric variables is a number between $-1$ and $1$ that says how much one linearly affects the other (*meaning if you tried to draw a line to "fit" the data*).
+
+```{r}
+cor(mpg$hwy, mpg$cty)
+```
+
+Some rules of thumb can be
+
+* If correlation is greater than 0.7, the data is strongly correlated.  If the $x$ variable increases, we expect the $y$ variable to increase as well.
+* If correlation is between 0.3 and 0.5.  If the $x$ variable increases, the $y$ variable tends to increase *(but less likely to do so than in the strong case)*
+* If the correlation is between 0 and 0.3, the data is hardly correlated.  It means that as $x$ increases, it's tough to expect $y$ to increase as well.
+
+For negative values, we switch one of "increase" to decrease.  For example, if the correlation is -0.8, we would say "as $x$ increases, we expect $y$ to decrease."
+
+### Challenge 6
+
+1. Go back and review the scatterplot of highway mpg and engine size (``displ``) (use the version with no color or faceting).  What tends to happen to highway mpg for larger engine cars?  Smaller?
+2. Now, compute their correlation.  Is its value consistent with the scatterplot?
+
+### WARNING: Correlation vs Causation
+
+Correlation is a value applied to a dataset that already exists.  It does not necessarily mean that there is a *"causal"* relationship, which would happen if someone tried to intervene with the data.  Here is an example:
+
+*"We expect the daily temperature and number of people on the beach to be positively correlated.  We also expect number of shark attacks and daily temperature and to be positively correlated, since higher temperatures mean more people on the beach, so naturally there are more shark attacks.  However, the relationship is not \textbf{causal}.  If we put more sharks in the water, the number of shark attacks will increase, but it will not increase the temperature."*
+
+### Challenge 7
+
+Think of two scenarios:
+
+1. Two variables that are correlated with one another, and there **is** a causal relationship.
+2. Two variables that are correlated with one another, and there **is not** a causal relationship.  *(This happens in the shark attack example.  Think of a new example.)*
+
+
+### Scatterplots with lines of best fit
+
+```{r}
+ggplot(mpg, aes(x=hwy, y = cty)) +
+  geom_jitter() +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+Lines of best fit can be misleading *(and other methods should be used)* when there is not a linear relationship:
+
+```{r}
+ggplot(mpg, aes(x=displ, y = cty)) +
+  geom_jitter() +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+This line is "pretty accurate" but only works for certain parts of the graph.  Notice that it is inappropriate for very large and very small engine sizes.
