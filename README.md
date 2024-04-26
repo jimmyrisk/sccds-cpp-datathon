@@ -1,3 +1,5 @@
 # sccds-cpp-datathon
 
-Notebooks are rough drafts.  Open to suggestions before the event.
+Final versions are listed.
+
+TODO: Post preprocessing code from original facebook dataset.
